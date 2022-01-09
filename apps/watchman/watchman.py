@@ -26,7 +26,7 @@ class Watchman(hass.Hass):
         self.notify_service = self.args.get('notify_service', None)
 
         if not self.notify_service:
-            self.throw_error('No notification service specified, please uncomment notify_service parameter in {APP_CFG_PATH} and put a notification service e.g. notify.telegram')
+            self.throw_error(f'Please uncomment notify_service parameter in {APP_CFG_PATH} and specify a notification service for watchman reports, e.g. notify.telegram')
         elif not self.notify_service in self.load_services():
             self.throw_error(f'{self.notify_service} cannot be used as notify_service parameter in {APP_CFG_PATH}, a notification service should be specified, e.g. notify.telegram')
         else:
