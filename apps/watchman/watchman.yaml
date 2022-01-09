@@ -1,0 +1,11 @@
+watchman:
+  module: watchman
+  class: Watchman
+  excluded_folders: 
+    - /config/esphome
+    - /config/custom_components
+    - /config/appdaemon
+    - /config/www
+  #notify_service: notify.telegram
+
+global_modules: utils
