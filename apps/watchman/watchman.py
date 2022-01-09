@@ -10,7 +10,7 @@ import time
 APP_NAME = "watchman"
 APP_CFG_PATH = "/config/appdaemon/watchman/watchman.yaml"
 
-class Watchman(hass.Hass):
+class Linter(hass.Hass):
     def initialize(self):
         self.entity_pattern = entity_pattern = re.compile("entity_id:\s*((air_quality|alarm_control_panel|alert|automation|binary_sensor|button|calendar|camera|climate|counter|device_tracker|fan|group|humidifier|input_boolean|input_number|input_select|light|media_player|number|person|proximity|scene|script|select|sensor|sun|switch|timer|vacuum|weather|zone)\.[A-Za-z_0-9]*)")
         self.service_pattern = re.compile("service:\s*([A-Za-z_0-9]*\.[A-Za-z_0-9]*)")
@@ -24,14 +24,8 @@ class Watchman(hass.Hass):
         # large reports are divided into chunks (size in bytes) as notification services may reject very long messages
         self.chunk_size = self.args.get('chunk_size', 3500)
         self.notify_service = self.args.get('notify_service', None)
-
-        if not self.notify_service:
-            self.throw_error(f'Please uncomment notify_service parameter in {APP_CFG_PATH} and specify a notification service for watchman reports, e.g. notify.telegram')
-        elif not self.notify_service in self.load_services():
-            self.throw_error(f'{self.notify_service} cannot be used as notify_service parameter in {APP_CFG_PATH}, a notification service should be specified, e.g. notify.telegram')
-        else:
+        if self.notification_service_available():
             self.log(f'Notificaton service: {self.notify_service}', level="DEBUG")
-            self.notify_service = self.notify_service.replace('.','/')
 
         self.ignore = self.args.get('ignore', [])
         if not isinstance(self.ignore, list):
@@ -44,12 +38,25 @@ class Watchman(hass.Hass):
         self.listen_event(self.on_event, event="ad.watchman.audit")
         #self.audit(ignored_states = self.ignored_states)
 
+    def notification_service_available(self):
+        if not self.notify_service:
+            self.throw_warning(f'Please uncomment notify_service parameter in {APP_CFG_PATH} and specify a notification service for watchman reports, e.g. notify.telegram')
+            return False
+        elif not self.notify_service in self.load_services():
+            self.throw_warning(f'{self.notify_service} cannot be used as notify_service parameter in {APP_CFG_PATH}, a notification service should be specified, e.g. notify.telegram')
+            return False
+        else:
+            return True
+
     def on_event(self, event_name, data, kwargs):
         self.audit(ignored_states = self.ignored_states)
 
     def throw_error(self, msg):
         self.call_service("persistent_notification/create", title = f"Invalid {APP_NAME} config", message = msg )
         raise Exception(msg)
+
+    def throw_warning(self, msg):
+        self.call_service("persistent_notification/create", title = f"Invalid {APP_NAME} config", message = msg )
 
     def load_services(self):
         services = []
@@ -124,6 +131,7 @@ class Watchman(hass.Hass):
 
     def send_notification(self, report):
         #todo check exception
-        for chunk in report:
-            self.call_service(self.notify_service, message=chunk)
+        if self.notification_service_available():
+            for chunk in report:
+                self.call_service(self.notify_service.replace('.','/'), message=chunk)
 
