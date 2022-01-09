@@ -37,16 +37,16 @@ Options:
 
 Key | Required | Description | Default 
 ------------ | ------------- | ------------- | ------------- 
-module | True | Appdaemon requirement | watchman
-class | True | Appdaemon requirement | Wathman 
-globals | True | Appdaemon requirement | utils
+module | True | Appdaemon requirement | "watchman"
+class | True | Appdaemon requirement | "Watchman" 
+globals | True | Appdaemon requirement | "utils"
 notify_service | False | Home assistant notiication service to sent report via | None 
-included_folders | False | List of folders to scan for entities and services | /config
+included_folders | False | List of folders to scan for entities and services | "/config"
 excluded_folders | False | List of folders to exclude from scan. Takes precedence over included_folders | None
 report_header | False | Custom header for watchman report | "=== Watchman Report ==="
 ignored_items | False | List of items to ignore. The entity/service will be excluded from the report if their name fully matches one from the ignore list | None
 ignored_states | False | List of entity states which should be ignored. Possible items are: missing, unavailable, unknown | None
-chunk_size | False | Average size of a notification message in bytes. If report text size exceeds chunk_size, the report will be sent in several subsequent messages. 
+chunk_size | False | Average size of a notification message in bytes. If report text size exceeds chunk_size, the report will be sent in several subsequent messages. | 3500
 
 
 ```
