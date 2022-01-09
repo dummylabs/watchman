@@ -19,9 +19,9 @@ Once you have AppDaemon up and running (check the logs), you can proceed to inst
 
 ### Install with HACS 
 This is a recommended way to install watchman. Installation in HACS is done in three simple steps:
-1. make sure "Enable AppDaemon apps discovery & tracking" option is active. It's located in Configuration -> Devices & Services -> HACS -> Configure. 
-2. go to the "Automation" section on HACS, tap the three-dots menu in the upper right corner, go to "Custom repositories". Add new repository dummylabs/watchman with AppDaemon category.
-3. click the big blue button "Explore and download repositories" and search for "watchman", then click "Download this repository with HACS". 
+1. Make sure "Enable AppDaemon apps discovery & tracking" option is active. It's located in Configuration -> Devices & Services -> HACS -> Configure. 
+2. Go to the "Automation" section on HACS, tap the three-dots menu in the upper right corner, go to "Custom repositories". Add new repository dummylabs/watchman with AppDaemon category.
+3. Click the big blue button "Explore and download repositories" and search for "watchman", then click "Download this repository with HACS". 
 
 When the application is installed, check its configuration file in `/config/appdaemon/apps/watchman/watchman.yaml` and adjust it according to information from section Configuration below.
 
