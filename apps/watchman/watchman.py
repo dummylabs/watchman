@@ -24,8 +24,6 @@ class Watchman(hass.Hass):
         # large reports are divided into chunks (size in bytes) as notification services may reject very long messages
         self.chunk_size = self.args.get('chunk_size', 3500)
         self.notify_service = self.args.get('notify_service', None)
-        if self.notification_service_available():
-            self.log(f'Notificaton service: {self.notify_service}', level="DEBUG")
 
         self.ignore = self.args.get('ignore', [])
         if not isinstance(self.ignore, list):
@@ -37,16 +35,6 @@ class Watchman(hass.Hass):
 
         self.listen_event(self.on_event, event="ad.watchman.audit")
         #self.audit(ignored_states = self.ignored_states)
-
-    def notification_service_available(self):
-        if not self.notify_service:
-            self.throw_warning(f'Please uncomment notify_service parameter in {APP_CFG_PATH} and specify a notification service for watchman reports, e.g. notify.telegram')
-            return False
-        elif not self.notify_service in self.load_services():
-            self.throw_warning(f'{self.notify_service} cannot be used as notify_service parameter in {APP_CFG_PATH}, a notification service should be specified, e.g. notify.telegram')
-            return False
-        else:
-            return True
 
     def on_event(self, event_name, data, kwargs):
         self.audit(ignored_states = self.ignored_states)
@@ -126,12 +114,12 @@ class Watchman(hass.Hass):
             report_file.write(chunk)
         report_file.close()
                         
-        if entities_missing or services_missing:
+        if (entities_missing or services_missing) and self.notify_service:
             self.send_notification(report_chunks)
 
     def send_notification(self, report):
-        #todo check exception
-        if self.notification_service_available():
-            for chunk in report:
-                self.call_service(self.notify_service.replace('.','/'), message=chunk)
+        if not self.notify_service in self.load_services():
+            self.throw_error(f'{self.notify_service} cannot! be used as notify_service parameter in {APP_CFG_PATH}, a notification service should be specified, e.g. notify.telegram')
+        for chunk in report:
+            self.call_service(self.notify_service.replace('.','/'), message=chunk)
 
