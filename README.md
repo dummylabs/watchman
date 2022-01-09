@@ -12,12 +12,12 @@ The app has very simple internals, it knows nothing about complex relationships 
 
 ## AppDaemon installation 
 
-You will need to have AppDaemon installed to run watchman. If you use Home Assistant Operating System or Home Assistant Supervised, the easiest way to install AppDaemon 4 will be an addon from the Add-on store. Once the addon is installed it will create a folder in /config/appdaemon with the needed structure for AppDaemon to run. AppDaemon can also be installed for HA Container and HA Core flavors, check the documentation here: https://appdaemon.readthedocs.io/en/latest/INSTALL.html 
+You will need to have AppDaemon installed to run watchman. If you use Home Assistant Operating System or Home Assistant Supervised, the easiest way to install AppDaemon 4 will be the addon from the Add-on store. Once the addon is installed and started it will create a folder in /config/appdaemon with the needed structure for AppDaemon to run. AppDaemon can also be installed for HA Container and HA Core flavors, check the documentation here: https://appdaemon.readthedocs.io/en/latest/INSTALL.html 
 
 ## Watchman installation 
 Once you have AppDaemon up and running (check the logs), you can proceed to install watchman either manually or through HACS. It is important to have AppDaemon up and running before installing watchman.
 
-### HACS 
+### Install with HACS 
 This is a recommended way to install watchman. Installation in HACS is done in three simple steps:
 1. make sure "Enable AppDaemon apps discovery & tracking" option is active. It's located in Configuration -> Devices & Services -> HACS -> Configure. 
 2. go to the "Automation" section on HACS, tap the three-dots menu in the upper right corner, go to "Custom repositories". Add new repository dummylabs/watchman with AppDaemon category.
@@ -25,13 +25,13 @@ This is a recommended way to install watchman. Installation in HACS is done in t
 
 When the application is installed, check its configuration file in `/config/appdaemon/apps/watchman/watchman.yaml` and adjust it according to information from section Configuration below.
 
-### Manual Install
+### Manual install
 Download the latest version of watchman.py and watchman.yaml, and then place the watchman folder in your `/config/appdaemon/apps/watchman`. The files need to be in `/config/appdaemon/apps/watchman/watchman.py` and `/config/appdaemon/apps/watchman/watchman.yaml` respectively. 
 
 
 ## Configuration
 
-### Minimal working example apps.yaml:
+
 
 Options:
 ---
@@ -49,6 +49,7 @@ ignored_items | False | List of items to ignore. The entity/service will be excl
 ignored_states | False | List of entity states which should be ignored. Possible items are: missing, unavailable, unknown | `None`
 chunk_size | False | Average size of a notification message in bytes. If report text size exceeds chunk_size, the report will be sent in several subsequent messages. | `3500`
 
+### Minimal working example apps.yaml:
 
 ```
 watchman:
@@ -58,6 +59,10 @@ watchman:
 
 global_modules: utils
 ```
+
+### Advanced configuration
+
+TODO
 
 ## Usage
 
