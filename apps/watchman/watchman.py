@@ -10,7 +10,7 @@ import time
 APP_NAME = "watchman"
 APP_CFG_PATH = "/config/appdaemon/watchman/watchman.yaml"
 
-class Linter(hass.Hass):
+class Watchman(hass.Hass):
     def initialize(self):
         self.entity_pattern = entity_pattern = re.compile("entity_id:\s*((air_quality|alarm_control_panel|alert|automation|binary_sensor|button|calendar|camera|climate|counter|device_tracker|fan|group|humidifier|input_boolean|input_number|input_select|light|media_player|number|person|proximity|scene|script|select|sensor|sun|switch|timer|vacuum|weather|zone)\.[A-Za-z_0-9]*)")
         self.service_pattern = re.compile("service:\s*([A-Za-z_0-9]*\.[A-Za-z_0-9]*)")
@@ -98,17 +98,17 @@ class Linter(hass.Hass):
         report += f"{self.report_header} \n"
 
         if services_missing:
-            report += f"\nMissing {len(services_missing)} service(-s) from {len(service_list)} found in your config:\n"
+            report += f"\n=== Missing {len(services_missing)} service(-s) from {len(service_list)} found in your config:\n"
             for service in services_missing: 
-                report += f"{service} found in {service_list[service]}\n"
+                report += f"{service} in {service_list[service]}\n"
                 if len(report) > self.chunk_size:
                     report_chunks.append(report)
                     report = ""
         else:
-            report += f"\nCongratulations, all {len(service_list)} services from your config are available!\n"
+            report += f"\n=== Congratulations, all {len(service_list)} services from your config are available!\n"
 
         if entities_missing:
-            report += f"\nMissing {len(entities_missing)} entity(-es) from {len(entity_list)} found in your config:\n"
+            report += f"\n=== Missing {len(entities_missing)} entity(-es) from {len(entity_list)} found in your config:\n"
             for entity in entities_missing:
                 state = self.get_state(entity) or 'missing'
                 report += f"{entity}[{state}] in: {entity_list[entity]}\n"
@@ -116,9 +116,9 @@ class Linter(hass.Hass):
                     report_chunks.append(report)
                     report = ""
         else:
-            report += f"\nCongratulatiions, all {len(entity_list)} entities from your config are available!"
+            report += f"\n=== Congratulatiions, all {len(entity_list)} entities from your config are available!"
 
-        report += f"\nParsed {files_parsed} yaml files in {(time.time()-start_time):.2f} s."
+        report += f"\n=== Parsed {files_parsed} yaml files in {(time.time()-start_time):.2f} s."
         report_chunks.append(report)
 
         report_file = open('/config/watchman_report.txt', "w")
