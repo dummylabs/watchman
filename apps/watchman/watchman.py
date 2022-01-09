@@ -10,7 +10,7 @@ import time
 APP_NAME = "watchman"
 APP_CFG_PATH = "/config/appdaemon/watchman/watchman.yaml"
 
-class Linter(hass.Hass):
+class Watchman(hass.Hass):
     def initialize(self):
         self.entity_pattern = entity_pattern = re.compile("entity_id:\s*((air_quality|alarm_control_panel|alert|automation|binary_sensor|button|calendar|camera|climate|counter|device_tracker|fan|group|humidifier|input_boolean|input_number|input_select|light|media_player|number|person|proximity|scene|script|select|sensor|sun|switch|timer|vacuum|weather|zone)\.[A-Za-z_0-9]*)")
         self.service_pattern = re.compile("service:\s*([A-Za-z_0-9]*\.[A-Za-z_0-9]*)")
