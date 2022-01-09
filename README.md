@@ -30,13 +30,39 @@ Download the latest version of watchman.py and watchman.yaml, and then place the
 
 ## Configuration
 
+### Minimal working example apps.yaml:
+
+Options:
+---
+
+Key | Required | Description | Default 
+------------ | ------------- | ------------- | ------------- 
+module | True | Appdaemon requirement | watchman
+class | True | Appdaemon requirement | Wathman 
+globals | True | Appdaemon requirement | utils
+notify_service | False | Home assistant notiication service to sent report via | None 
+included_folders | False | List of folders to scan for entities and services | /config
+excluded_folders | False | List of folders to exclude from scan. Takes precedence over included_folders | None
+report_header | False | Custom header for watchman report | "=== Watchman Report ==="
+ignored_items | False | List of items to ignore. The entity/service will be excluded from the report if their name fully matches one from the ignore list | None
+ignored_states | False | List of entity states which should be ignored. Possible items are: missing, unavailable, unknown | None
+chunk_size | False | Average size of a notification message in bytes. If report text size exceeds chunk_size, the report will be sent in several subsequent messages. 
+
+
+```
+watchman:
+  module: watchman
+  class: Watchman
+  notify_service: notify.telegram
+
+global_modules: utils
+```
+
 ## Usage
 
-The audit can be triggered by firing event.watchman_audit from an automation or a script. Once the event fired, the report will be sent using default notification service from the app configuration. On top of that a few sensors will be automatically updated:
+The audit can be triggered by firing event ad.watchman_audit from an automation or a script. Once the event fired, the report will be prepared and saved to /config/watchman_report.txt. If configuration parameter notify_service is set, the report will be sent as a notification. Long report may be splitted in several messages due to limitations imposed by notification services (e.g. telegram). Besides of report, a few sensors will be automatically created or updated:
 
-- sensor.watchman_total_entities
 - sensor.watchman_missing_entities
-- sensor.watchman_total_services
 - sensor.watchman_missing services
 
 Please note that, due to the nature of AppDaemon created entities, these sensors are not persistent and will not be available after Home Assistant reboot until event.watchman_audit is fired again.
