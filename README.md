@@ -1,6 +1,6 @@
 # AppDaemon Watchman
 
-The world around us is constantly changing and so is Home Assistant. How many times you found yourself in situation when your automations had stopped to work because some entities become permanently unavailable or a service changed its name? For example, Home Asisstant companion app can easily change the name of its services and sensors it exposes to Home Assistant after you change device name in configuration. The watchman is an attempt to control such changes and make you able to react proactively before some critical automation will break.
+The world around us is constantly changing and so is Home Assistant. How often have you find yourself in situation when your automations had stopped to work because some entities become permanently unavailable or a service changed its name? For example, Home Asisstant companion app can easily change the name of its services and sensors it exposes to Home Assistant after you change device name in configuration. The watchman is an attempt to control such changes and make you able to react proactively before some critical automation will break.
 
 ## What does it do
 The app attempts to collect all the entities (sensors, timers, input_selects and so on) mentioned in your yaml configuration files as well as all the services. Having a list of all entities, it checks their state one by one and reports those not available or missing. For services, the app checks whether service is available in service registry and reports missing services via notification service of choice (unless it is missing too :). The [example of a report](https://github.com/dummylabs/watchman#example-of-watchman-report) is given below.
@@ -72,8 +72,8 @@ Please note that, due to the nature of AppDaemon created entities, these sensors
 === Watchman Report === 
 
 === Missing 2 service(-s) from 39 found in your config:
-tts.yandextts_say found in {'/config/automations.yaml': [100]}
-notify.mobile_app_vog_l29 found in {'/config/scripts.yaml': [65]}
+tts.yandextts_say in {'/config/automations.yaml': [100]}
+notify.mobile_app_vog_l29 in {'/config/scripts.yaml': [65]}
 
 === Missing 51 entity(-es) from 239 found in your config:
 sensor.pm25_mean[unavailable] in: {'/config/customize.yaml': [6]}
