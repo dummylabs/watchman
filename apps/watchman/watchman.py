@@ -25,8 +25,10 @@ class Watchman(hass.Hass):
         self.chunk_size = self.args.get('chunk_size', 3500)
         self.notify_service = self.args.get('notify_service', None)
 
-        if not self.notify_service or not self.notify_service in self.load_services():
-            self.throw_error(f'{self.notify_service} cannot be used as notify_service parameter in {APP_CFG_PATH}, an active notification service should be specified, e.g. notify.telegram')
+        if not self.notify_service:
+            self.throw_error('No notification service specified, please uncomment notify_service parameter in {APP_CFG_PATH} and put a notification service e.g. notify.telegram')
+        elif not self.notify_service in self.load_services():
+            self.throw_error(f'{self.notify_service} cannot be used as notify_service parameter in {APP_CFG_PATH}, a notification service should be specified, e.g. notify.telegram')
         else:
             self.log(f'Notificaton service: {self.notify_service}', level="DEBUG")
             self.notify_service = self.notify_service.replace('.','/')
