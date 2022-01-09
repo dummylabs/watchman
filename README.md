@@ -14,7 +14,7 @@ The app has very simple internals, it knows nothing about complex relationships 
 
 You will need to have AppDaemon installed to run watchman. If you use Home Assistant Operating System or Home Assistant Supervised, the easiest way to install AppDaemon 4 will be an addon from the Add-on store. Once the addon is installed it will create a folder in /config/appdaemon with the needed structure for AppDaemon to run. AppDaemon can also be installed for HA Container and HA Core flavors, check the documentation here: https://appdaemon.readthedocs.io/en/latest/INSTALL.html 
 
-## watchman installation 
+## Watchman installation 
 Once you have AppDaemon up and running (check the logs), you can proceed to install watchman either manually or through HACS. It is important to have AppDaemon up and running before installing watchman.
 
 ### HACS 
@@ -25,7 +25,7 @@ This is a recommended way to install watchman. Installation in HACS is done in t
 
 When the application is installed, check its configuration file in `/config/appdaemon/apps/watchman/watchman.yaml` and adjust it according to information from section Configuration below.
 
-### Manual 
+### Manual Install
 Download the latest version of watchman.py and watchman.yaml, and then place the watchman folder in your `/config/appdaemon/apps/watchman`. The files need to be in `/config/appdaemon/apps/watchman/watchman.py` and `/config/appdaemon/apps/watchman/watchman.yaml` respectively. 
 
 
