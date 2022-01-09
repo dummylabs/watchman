@@ -26,7 +26,7 @@ This is a recommended way to install watchman. Installation in HACS is done in t
 When the application is installed, check its configuration file in `/config/appdaemon/apps/watchman/watchman.yaml` and adjust it according to information from section Configuration below.
 
 ### Manual install
-Download the latest version of watchman.py and watchman.yaml, and then place the watchman folder in your `/config/appdaemon/apps/watchman`. The files need to be in `/config/appdaemon/apps/watchman/watchman.py` and `/config/appdaemon/apps/watchman/watchman.yaml` respectively. 
+Download the latest version of watchman.py and watchman.yaml, and then copy them to `/config/appdaemon/apps/watchman`. The files need to be in `/config/appdaemon/apps/watchman/watchman.py` and `/config/appdaemon/apps/watchman/watchman.yaml` respectively. 
 
 
 ## Configuration
