@@ -168,9 +168,8 @@ class Watchman(hass.Hass):
     def send_notification(self, report):
         if not self.notify_service in self.load_services():
             self.persistent_notification(f"invalid {APP_NAME} config", 
-            f"{self.notify_service} cannot be used as `notify_service` "
-            f"parameter in `{APP_CFG_PATH}`, a notification "
-            "service should be specified, e.g. `notify.telegram`", error=True)
+            f"{self.notify_service} service was not found in service registry. "
+            f"Please specify a valid notification service, e.g. `notify.telegram`", error=True)
         elif not self.notify_service:
             self.persistent_notification(f"invalid {APP_NAME} config", 
             f"Set `notify_service` parameter in `{APP_CFG_PATH}`, to a notification "
