@@ -23,6 +23,10 @@ This is a recommended way to install watchman. Installation in HACS is done in t
 2. Go to the "Automation" section on HACS, tap the three-dots menu in the upper right corner, go to "Custom repositories". Add new repository `dummylabs/watchman` with AppDaemon category. If Custom Repositories is hidden, wait until background task of HACS finished and custom repositories are unblocked. 
 3. Click the big blue button "Explore and download repositories" and search for "watchman", then click "Download this repository with HACS". 
 
+#### Check if watchman is up and running
+
+Go to Configuration->Addons, Backups & Supervisor -> AppDaemon 4 -> Log. If watchman is installed, you should find following line in AppDaemon log: `INFO AppDaemon: Initializing app watchman using class Watchman from module watchman`.
+
 When the application is installed, check its configuration file in `/config/appdaemon/apps/watchman/watchman.yaml` and adjust it according to information from section Configuration below.
 
 ### Manual install
