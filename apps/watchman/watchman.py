@@ -8,8 +8,9 @@ import yaml
 import time
 
 APP_NAME = "watchman"
-APP_CFG_PATH = "/config/appdaemon/watchman/watchman.yaml"
+APP_CFG_PATH = "/config/appdaemon/apps/watchman/watchman.yaml"
 EVENT_NAME = "ad.watchman.audit"
+APP_FOLDER = "/config/appdaemon/apps/watchman"
 
 class Watchman(hass.Hass):
     def initialize(self):
@@ -56,7 +57,8 @@ class Watchman(hass.Hass):
             self.persistent_notification("Error from watchman", 
             f"Incorrect `report_path` {self.report_path}.", error=True)
 
-        if not os.path.exists(self.report_path):
+        if not self.get_flag('.skip_greetings'):
+            self.set_flag('.skip_greetings')
             self.persistent_notification("Hello from watchman!", 
             "Congratulations, watchman is up and running!\n\n "
             f"Please adjust `{APP_CFG_PATH}` config file according "
@@ -72,7 +74,9 @@ class Watchman(hass.Hass):
             raise Exception(msg)
 
     def on_event(self, event_name, data, kwargs):
-        self.audit(ignored_states = self.ignored_states)
+        create_file = data.get("create_file", True)
+        send_notification = data.get("send_notification", True)
+        self.audit(create_report_file = create_file, notification = send_notification, ignored_states = self.ignored_states)
 
     def load_services(self):
         services = []
@@ -81,7 +85,7 @@ class Watchman(hass.Hass):
             services.append(f"{s['domain']}.{s['service']}")
         return services
 
-    def audit(self, ignored_states = []):
+    def audit(self, create_report_file, notification, ignored_states = []):
         start_time = time.time()
         entity_list, service_list, files_parsed = utils.parse(self.included_folders, 
         self.excluded_folders, self)
@@ -121,8 +125,10 @@ class Watchman(hass.Hass):
                 if len(report) > self.chunk_size:
                     report_chunks.append(report)
                     report = ""
-        else:
+        elif len(service_list) > 0:
             report += f"\n=== Congratulations, all {len(service_list)} services from your config are available!\n"
+        else:
+            report += f"\n=== No services found in configuration files!\n"
 
         if entities_missing:
             report += f"\n=== Missing {len(entities_missing)} entity(-es) from {len(entity_list)} found in your config:\n"
@@ -132,26 +138,32 @@ class Watchman(hass.Hass):
                 if len(report) > self.chunk_size:
                     report_chunks.append(report)
                     report = ""
-        else:
+        elif len(entity_list) > 0:
             report += f"\n=== Congratulatiions, all {len(entity_list)} entities from your config are available!"
+        else:
+            report += f"\n=== No entities found in configuration files!\n"
 
         report += f"\n=== Parsed {files_parsed} yaml files in {(time.time()-start_time):.2f} s."
         report_chunks.append(report)
 
-        if not os.path.exists(self.report_path):
-            self.persistent_notification("Achievement unlocked: first report!", 
-            f"Your first report was stored in `{self.report_path}` \n\n " 
-            "TIP: set `notify_service` parameter in configuration file to "
-            "receive report via notification service of choice. \n\n "
-            "This is one-time message, it will not bother you in the future.")
+        if create_report_file:
+            if not self.get_flag('.skip_achievement'):
+                self.set_flag('.skip_achievement')
+                self.persistent_notification("Achievement unlocked: first report!", 
+                f"Your first report was stored in `{self.report_path}` \n\n " 
+                "TIP: set `notify_service` parameter in configuration file to "
+                "receive report via notification service of choice. \n\n "
+                "This is one-time message, it will not bother you in the future.")
 
-        report_file = open('/config/watchman_report.txt', "w")
-        for chunk in report_chunks:
-            report_file.write(chunk)
-        report_file.close()
-                        
-        if (entities_missing or services_missing) and self.notify_service:
-            self.send_notification(report_chunks)
+            report_file = open(self.report_path, "w")
+            for chunk in report_chunks:
+                report_file.write(chunk)
+            report_file.close()
+        if notification:
+            if (entities_missing or services_missing):
+                self.send_notification(report_chunks)
+            else:
+                self.log("Entities and services are fine, no notification required")
 
     def send_notification(self, report):
         if not self.notify_service in self.load_services():
@@ -159,6 +171,17 @@ class Watchman(hass.Hass):
             f"{self.notify_service} cannot be used as `notify_service` "
             f"parameter in `{APP_CFG_PATH}`, a notification "
             "service should be specified, e.g. `notify.telegram`", error=True)
+        elif not self.notify_service:
+            self.persistent_notification(f"invalid {APP_NAME} config", 
+            f"Set `notify_service` parameter in `{APP_CFG_PATH}`, to a notification "
+            "service, e.g. `notify.telegram`", error=True)            
         for chunk in report:
             self.call_service(self.notify_service.replace('.','/'), message=chunk)
+
+    def set_flag(self, flag):
+        report_file = open(os.path.join(APP_FOLDER, flag), "w")
+        report_file.close()
+
+    def get_flag(self, flag):
+        return os.path.exists(os.path.join(APP_FOLDER, flag))
 
