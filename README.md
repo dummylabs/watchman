@@ -56,7 +56,7 @@ chunk_size | False | Average size of a notification message in bytes. If report 
 
 ### Minimal working configuration
 
-```
+```yaml
 watchman:
   module: watchman
   class: Watchman
@@ -66,7 +66,7 @@ global_modules: utils
 
 ### Advanced configuration
 
-```
+```yaml
 watchman:
   module: watchman
   class: Watchman
@@ -99,7 +99,7 @@ If one or both pafameters were not set, they are `True` by default.
 
 Automation example:
 
-```
+```yaml
 event: ad.watchman.audit
 event_data:
   create_file: true
