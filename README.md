@@ -60,18 +60,36 @@ chunk_size | False | Average size of a notification message in bytes. If report 
 watchman:
   module: watchman
   class: Watchman
-  notify_service: notify.telegram
 
 global_modules: utils
 ```
 
 ### Advanced configuration
 
-TODO
+```
+watchman:
+  module: watchman
+  class: Watchman
+  excluded_folders: 
+    - /config/esphome
+    - /config/custom_components
+    - /config/appdaemon
+    - /config/www
+  notify_service: notify.telegram
+  report_path: /config/watchman_report.txt
+  chunk_size: 2000
+  ignored_items: 
+    - tts.yandextts_say
+    - notify.mobile_app_vog_l29
+  ignored_states:
+    - unavailable
+
+global_modules: utils
+```
 
 ## Usage
 
-The audit can be triggered by firing event `ad.watchman_audit` from automation or a script. Once the event is fired, the report will be prepared and saved to `/config/watchman_report.txt`. If configuration parameter `notify_service` is set, the report will allso be sent as a notification. A long report may be split into several messages due to limitations imposed by notification services (e.g. telegram). 
+The audit can be triggered by firing event `ad.watchman.audit` from automation or a script. Once the event is fired, the report will be prepared and saved to `/config/watchman_report.txt`. If configuration parameter `notify_service` is set, the report will allso be sent as a notification. A long report may be split into several messages due to limitations imposed by notification services (e.g. telegram). 
 The event handler will create a text file with the report and will try to send a notification via default notification service. This behavior can be altered with two additional parameters in the event data:
 
  - create_file: True 
