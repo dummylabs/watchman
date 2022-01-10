@@ -20,7 +20,7 @@ Once you have AppDaemon up and running (check the logs), you can proceed to inst
 ### Install with HACS 
 This is a recommended way to install watchman. Installation in HACS is done in three simple steps:
 1. Make sure "Enable AppDaemon apps discovery & tracking" option is active. It's located in Configuration -> Devices & Services -> HACS -> Configure. 
-2. Go to the "Automation" section on HACS, tap the three-dots menu in the upper right corner, go to "Custom repositories". Add new repository `dummylabs/watchman` with AppDaemon category.
+2. Go to the "Automation" section on HACS, tap the three-dots menu in the upper right corner, go to "Custom repositories". Add new repository `dummylabs/watchman` with AppDaemon category. If Custom Repositories is hidden, wait until background task of HACS finished and custom repositories are unblocked. 
 3. Click the big blue button "Explore and download repositories" and search for "watchman", then click "Download this repository with HACS". 
 
 When the application is installed, check its configuration file in `/config/appdaemon/apps/watchman/watchman.yaml` and adjust it according to information from section Configuration below.
@@ -73,7 +73,7 @@ The audit can be triggered by firing event `ad.watchman_audit` from automation o
 
 Please note that, due to the nature of AppDaemon created entities, these sensors are not persistent and will not be available after Home Assistant reboot until event.watchman_audit is fired again.
 
-## Example of watchman report
+## Example of a watchman report
 ```
 === Watchman Report === 
 
