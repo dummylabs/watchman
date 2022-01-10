@@ -54,7 +54,7 @@ ignored_items | False | List of items to ignore. The entity/service will be excl
 ignored_states | False | List of entity states which should be ignored. Possible items are: missing, unavailable, unknown | `None`
 chunk_size | False | Average size of a notification message in bytes. If report text size exceeds chunk_size, the report will be sent in several subsequent messages. | `3500`
 
-### Minimal working example apps.yaml:
+### Minimal working configuration
 
 ```
 watchman:
