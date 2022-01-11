@@ -34,7 +34,7 @@ When the application is installed, check its configuration file in `/config/appd
 Download the latest version of watchman.py and watchman.yaml, and then copy them to `/config/appdaemon/apps/watchman`. The files need to be in `/config/appdaemon/apps/watchman/watchman.py` and `/config/appdaemon/apps/watchman/watchman.yaml` respectively. 
 
 ### Important note on update
-You should always backup the configuration file `watchman.yaml` before HACS update as it will be overwritten by HACS.
+:bangbang: You should always backup the configuration file `watchman.yaml` before HACS update as it will be overwritten by HACS.
 
 
 ## Configuration
