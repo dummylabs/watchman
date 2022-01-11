@@ -13,7 +13,7 @@ Watchman can be installed either manually or using Home Assistant Community Stor
 
 ## AppDaemon installation 
 
-[AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) can be used with any flavour of Home Assistant setup. If you use Home Assistant Operating System or Home Assistant Supervised, the easiest way to install AppDaemon 4 will be the addon from the Add-on store. Once the addon is installed and started, it will create a folder in /config/appdaemon with the needed structure for AppDaemon to run. AppDaemon can also be installed for HA Container and HA Core flavors, check the documentation [here](https://appdaemon.readthedocs.io/en/latest/INSTALL.html).
+[AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) can work with any flavour of Home Assistant setup. If you use Home Assistant Operating System or Home Assistant Supervised, the easiest way to install AppDaemon 4 will be the addon from the Add-on store. Once the addon is installed and started, it will create a folder in /config/appdaemon with the needed structure for AppDaemon to run. AppDaemon can also be installed for HA Container and HA Core flavors, check the documentation [here](https://appdaemon.readthedocs.io/en/latest/INSTALL.html).
 
 ## Watchman installation 
 Once you have AppDaemon up and running (check the logs), you can proceed to install watchman either manually or through HACS. It is important to have AppDaemon up and running before installing watchman.
