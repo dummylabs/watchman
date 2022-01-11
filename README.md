@@ -9,12 +9,11 @@ The app attempts to collect all the Home Assistant entities (sensors, timers, in
 The app has very simple internals, it knows nothing about complex relationships and dependencies among yaml configuration files as well as nothing about the semantics of entities and automations. It parses yaml files line by line in the given folders and tries to guess references either to an entity or to a service, based on regexp heuristics. That means it can give both false positives (something which looks like a duck, swims like a duck, and quacks like a duck, but is not) and false negatives (when some entity in a configuration file was not detected by the app). To reduce false positives `ignored_items` parameter can be used (see Configuration section below). Improvements for false negatives are a goal for future releases. 
 
 # Installation
-
-The app can be installed either manually or using Home Assistant Comunity Store ([HACS](https://hacs.xyz/)).
+Watchman can be installed either manually or using Home Assistant Comunity Store ([HACS](https://hacs.xyz/)). But, regardless of app installation method, you should have AppDaemon installed to run watchman.
 
 ## AppDaemon installation 
 
-You will need to have AppDaemon installed to run watchman. If you use Home Assistant Operating System or Home Assistant Supervised, the easiest way to install AppDaemon 4 will be the addon from the Add-on store. Once the addon is installed and started it will create a folder in /config/appdaemon with the needed structure for AppDaemon to run. AppDaemon can also be installed for HA Container and HA Core flavors, check the documentation [here](https://appdaemon.readthedocs.io/en/latest/INSTALL.html).
+AppDaemon can be used with any flavour of Home Assistant setup. If you use Home Assistant Operating System or Home Assistant Supervised, the easiest way to install AppDaemon 4 will be the addon from the Add-on store. Once the addon is installed and started it will create a folder in /config/appdaemon with the needed structure for AppDaemon to run. AppDaemon can also be installed for HA Container and HA Core flavors, check the documentation [here](https://appdaemon.readthedocs.io/en/latest/INSTALL.html).
 
 ## Watchman installation 
 Once you have AppDaemon up and running (check the logs), you can proceed to install watchman either manually or through HACS. It is important to have AppDaemon up and running before installing watchman.
