@@ -9,7 +9,7 @@ The app attempts to collect all the Home Assistant entities (sensors, timers, in
 The app has very simple internals, it knows nothing about complex relationships and dependencies among yaml configuration files as well as nothing about the semantics of entities and automations. It parses yaml files line by line in the given folders and tries to guess references either to an entity or to a service, based on regexp heuristics. That means it can give both false positives (something which looks like a duck, swims like a duck, and quacks like a duck, but is not) and false negatives (when some entity in a configuration file was not detected by the app). To reduce false positives `ignored_items` parameter can be used (see Configuration section below). Improvements for false negatives are a goal for future releases. 
 
 # Installation
-Watchman can be installed either manually or using Home Assistant Comunity Store ([HACS](https://hacs.xyz/)). But, regardless of app installation method, you should have AppDaemon installed to run watchman.
+Watchman can be installed either manually or using Home Assistant Community Store ([HACS](https://hacs.xyz/)). But, regardless of app installation method, you should have AppDaemon installed to run watchman.
 
 ## AppDaemon installation 
 
