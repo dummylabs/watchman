@@ -24,7 +24,7 @@ def add_entry(_list, entry, yaml_file, lineno):
 
 def parse(folders, excluded_folders, logger=None):
     files_parsed = 0
-    entity_pattern = re.compile("([A-Za-z_0-9]*\s*:)?(?:\s*)?((air_quality|alarm_control_panel|alert|automation|binary_sensor|button|calendar|camera|climate|counter|device_tracker|fan|group|humidifier|input_boolean|input_number|input_select|light|media_player|number|person|proximity|scene|script|select|sensor|sun|switch|timer|vacuum|weather|zone)\.[A-Za-z_*0-9]+)")
+    entity_pattern = re.compile("(?:(?<=\s)|(?<=^)|(?<=\")|(?<=\'))([A-Za-z_0-9]*\s*:)?(?:\s*)?((air_quality|alarm_control_panel|alert|automation|binary_sensor|button|calendar|camera|climate|counter|device_tracker|fan|group|humidifier|input_boolean|input_number|input_select|light|media_player|number|person|proximity|scene|script|select|sensor|sun|switch|timer|vacuum|weather|zone)\.[A-Za-z_*0-9]+)")
     service_pattern = re.compile("service:\s*([A-Za-z_0-9]*\.[A-Za-z_0-9]+)")
     entity_list = {}
     service_list = {}
@@ -33,6 +33,8 @@ def parse(folders, excluded_folders, logger=None):
         #    logger.log(f'opening {yaml_file} file', level="DEBUG")
         files_parsed += 1
         for i, line in enumerate(open(yaml_file)):
+            if line.strip().startswith('#'):
+                continue
             for match in re.finditer(entity_pattern, line):
                 typ, val = match.group(1), match.group(2)
                 if typ != "service:" and "*" not in val and not val.endswith('.yaml'):
