@@ -1,6 +1,6 @@
 # AppDaemon Watchman
 
-The world around us is constantly changing and so is Home Assistant. How often have you found yourself in a situation when your automations had stopped working because some entities become permanently unavailable or service changed their name? For example, Home Assistant companion app can easily change the name of its services and sensors it exposes to Home Assistant after you change the device name in the configuration. The watchman is an attempt to control such changes and make you able to react proactively before some critical automation will break.
+The world around us is constantly changing and so is Home Assistant. How often have you found yourself in a situation when your automations had stopped working because some entities become permanently unavailable or service changed their name? For example, Home Assistant companion app can easily change the name of its services and sensors it exposes to Home Assistant if you changed the device name in the app configuration. The watchman is an attempt to control such changes and make you able to react proactively, before some critical automation will break.
 
 ## What does it do
 The app attempts to collect all the Home Assistant entities (sensors, timers, input_selects, and so on) mentioned in your yaml configuration files as well as all the services. Having a list of all entities, the app checks their state one by one and reports those not available or missing. For services, the app checks whether service is available in the service registry and reports missing services via notification service of choice (unless it is missing too :). The [example of a report](https://github.com/dummylabs/watchman#example-of-watchman-report) is given below.
@@ -25,16 +25,18 @@ This is a recommended way to install watchman. Installation in HACS is done in t
 
 #### Check if watchman is up and running
 
-Go to Configuration->Addons, Backups & Supervisor -> AppDaemon 4 -> Log. If watchman is installed, you should find following line in AppDaemon log: `INFO AppDaemon: Initializing app watchman using class Watchman from module watchman`.
+Go to Configuration->Addons, Backups & Supervisor -> AppDaemon 4 -> Log. If watchman is installed, you should find following line in AppDaemon log: `INFO AppDaemon: Initializing app watchman using class Watchman from module watchman`. On top of that a persistent Home Assistant notification will appear on the first run.
 
 When the application is installed, check its configuration file in `/config/appdaemon/apps/watchman/watchman.yaml` and adjust it according to information from section Configuration below.
 
 ### Manual install
 Download the latest version of watchman.py and watchman.yaml, and then copy them to `/config/appdaemon/apps/watchman`. The files need to be in `/config/appdaemon/apps/watchman/watchman.py` and `/config/appdaemon/apps/watchman/watchman.yaml` respectively. 
 
+### Important note on update
+You should always backup the configuration file `watchman.yaml` before HACS update as it will be overwritten by HACS.
+
 
 ## Configuration
-
 Configuration file is located in `/config/appdaemon/apps/watchman/watchman.yaml`
 
 
@@ -43,16 +45,16 @@ Options:
 
 Key | Required | Description | Default 
 ------------ | ------------- | ------------- | ------------- 
-module | True | Appdaemon requirement | `"watchman"`
-class | True | Appdaemon requirement | `"Watchman"` 
-globals | True | Appdaemon requirement | `"utils"`
-notify_service | False | Home assistant notification service to sent report via | `None` 
-included_folders | False | List of folders to scan for entities and services recursively | `"/config"`
-excluded_folders | False | List of folders to exclude from the scan. Takes precedence over included_folders | `None`
-report_header | False | Custom header for watchman report | `"=== Watchman Report ==="`
-ignored_items | False | List of items to ignore. The entity/service will be excluded from the report if their name fully matches one from the ignore list | `None`
-ignored_states | False | List of entity states which should be ignored. Possible items are: missing, unavailable, unknown | `None`
-chunk_size | False | Average size of a notification message in bytes. If report text size exceeds chunk_size, the report will be sent in several subsequent messages. | `3500`
+`module` | True | Appdaemon requirement | `"watchman"`
+`class` | True | Appdaemon requirement | `"Watchman"` 
+`globals` | True | Appdaemon requirement | `"utils"`
+`notify_service` | False | Home assistant notification service to sent report via | `None` 
+`included_folders` | False | List of folders to scan for entities and services recursively | `"/config"`
+`excluded_folders` | False | List of folders to exclude from the scan. Takes precedence over included_folders | `None`
+`report_header` | False | Custom header for watchman report | `"=== Watchman Report ==="`
+`ignored_items` | False | List of items to ignore. The entity/service will be excluded from the report if their name fully matches one from the ignore list | `None`
+`ignored_states` | False | List of entity states which should be ignored. Possible items are: missing, unavailable, unknown | `None`
+`chunk_size` | False | Some notification services, e.g. Telegram, refuse to deliver message if its size is greater than some internal limit. This key allows to set average size of a message in bytes. If report text size exceeds `chunk_size`, the report will be sent in several subsequent messages. | `3500`
 
 ### Minimal working configuration
 
