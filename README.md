@@ -53,8 +53,8 @@ Key | Required | Description | Default
 `excluded_folders` | False | List of folders to exclude from the scan. Takes precedence over included_folders | `None`
 `report_header` | False | Custom header for watchman report | `"=== Watchman Report ==="`
 `ignored_items` | False | List of items to ignore. The entity/service will be excluded from the report if their name fully matches one from the ignore list | `None`
-`ignored_states` | False | List of entity states which should be ignored. Possible items are: missing, unavailable, unknown | `None`
-`chunk_size` | False | Some notification services, e.g. Telegram, refuse to deliver message if its size is greater than some internal limit. This key allows to set average size of a message in bytes. If report text size exceeds `chunk_size`, the report will be sent in several subsequent messages. | `3500`
+`ignored_states` | False | List of entity states which should be ignored. Possible values are: `missing`, `unavailable`, `unknown` | `None`
+`chunk_size` | False | Some notification services, e.g., Telegram, refuse to deliver message if its size is greater than some internal limit. This key allows to set average size of a message in bytes. If report text size exceeds `chunk_size`, the report will be sent in several subsequent notifications | `3500`
 
 ### Minimal working configuration
 
