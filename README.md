@@ -99,11 +99,11 @@ global_modules: utils
 
 ## Usage
 
-The audit can be triggered by firing event `ad.watchman.audit` from automation or a script. Once the event is fired, the report will be prepared and saved to `/config/watchman_report.txt`. If configuration parameter `notify_service` is set, the report will allso be sent as a notification. A long report may be split into several messages due to limitations imposed by notification services (e.g. telegram). 
-The event handler will create a text file with the report and will try to send a notification via default notification service. This behavior can be altered with two additional parameters in the event data:
+The audit can be triggered by firing event `ad.watchman.audit` from Developer Tools UI, an automation or a script. Once the event is fired, the report will be prepared and saved to `/config/watchman_report.txt`. If configuration parameter `notify_service` is set, the report will allso be sent as a notification. A long report may be split into several messages due to limitations imposed by some notification services (e.g. telegram). 
+By default, the event handler will create a text file with the report and send a notification via default notification service. This behavior can be altered with two additional parameters in the event data:
 
- - create_file: True 
- - send_notification: True 
+ - `create_file: True` 
+ - `send_notification: True` 
 
 If one or both pafameters were not set, they are `True` by default. 
 
@@ -116,7 +116,7 @@ event_data:
   send_notification: false
 ```
 
-Besides of report, a few sensors will be automatically created or updated:
+Besides of the report, a few sensors will be automatically created or updated:
 
 - sensor.watchman_missing_entities
 - sensor.watchman_missing services
