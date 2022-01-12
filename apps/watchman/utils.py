@@ -10,8 +10,8 @@ def folder_included(path, excluded_folders):
 
 def get_next_file(folder_list, excluded_folders):
     for folder in folder_list:
-        root = os.path.join(folder, '**/*.yaml')
-        for filename in glob.iglob(root, recursive=True):
+        #root = os.path.join(folder, '**/*.yaml')
+        for filename in glob.iglob(folder, recursive=True):
             if folder_included(filename, excluded_folders):
                 yield filename
 

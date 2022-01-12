@@ -14,12 +14,20 @@ APP_FOLDER = "/config/appdaemon/apps/watchman"
 
 class Watchman(hass.Hass):
     def initialize(self):
+        self.check_lovelace = self.args.get('lovelace_ui', False)
         self.included_folders = self.args.get('included_folders', ['/config'])
 
         if not isinstance(self.included_folders, list) or len(self.included_folders) == 0:
             self.persistent_notification(f"invalid {APP_NAME} config", 
             f"`included_folders` parameter in `{APP_CFG_PATH}` should be "
             "a list with at least 1 folder in it", error=True)
+        else:
+            for i in range(len(self.included_folders)):
+                self.included_folders[i] = os.path.join(self.included_folders[i], '**/*.yaml')
+            if self.check_lovelace:
+                self.included_folders.append('/config/.storage/**/lovelace*')
+
+        self.log(self.included_folders)
         self.excluded_folders =  self.args.get('excluded_folders', [])
 
         if not isinstance(self.excluded_folders, list):
@@ -91,14 +99,17 @@ class Watchman(hass.Hass):
 
         entities_missing = {}
         services_missing = {}
+        service_registry = self.load_services()
+
         for entity, occurences in entity_list.items():
+            if entity in service_registry: #this is a service, not entity
+                continue
             state = self.get_state(entity) or 'missing'
             if entity in self.ignore or state in ignored_states:
                 continue            
             if state in ['missing', 'unknown', 'unavailable']:
                 entities_missing [entity] = occurences
-
-        service_registry = self.load_services()
+        
         for service, occurences in service_list.items():
             if service not in service_registry and service not in self.ignore:
                 services_missing[service] = occurences
