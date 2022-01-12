@@ -56,7 +56,7 @@ Key | Required | Description | Default
 `ignored_items` | False | List of items to ignore. The entity/service will be excluded from the report if their name fully matches one from the ignore list | `None`
 `ignored_states` | False | List of entity states which should be ignored. Possible values are: `missing`, `unavailable`, `unknown` | `None`
 `chunk_size` | False | Some notification services, e.g., Telegram, refuse to deliver message if its size is greater than some internal limit. This key allows to set average size of a message in bytes. If report text size exceeds `chunk_size`, the report will be sent in several subsequent notifications | `3500`
-'lovelace_ui' | False | Parse Lovelace UI configuration files stored in .storage folder (experimental) | False 
+`lovelace_ui` | False | Parse Lovelace UI configuration files stored in .storage folder (experimental) | False 
 
 ### Minimal working configuration
 
