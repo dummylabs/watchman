@@ -119,9 +119,9 @@ event_data:
 Besides of the report, a few sensors will be automatically created or updated:
 
 - sensor.watchman_missing_entities
-- sensor.watchman_missing services
+- sensor.watchman_missing_services
 
-Please note that, due to the nature of AppDaemon created entities, these sensors are not persistent and will not be available after Home Assistant reboot until event.watchman_audit is fired again.
+Please note that, due to AppDaemon specific, these sensors are not persistent and will not be available after Home Assistant reboot until `ad.watchman_audit` is fired again.
 
 ## Example of a watchman report
 ```
