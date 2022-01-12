@@ -17,9 +17,9 @@ Watchman can be installed either manually or using Home Assistant Community Stor
 
 ### Note on Home Assistant Docker Installation
 If you have Home Assistant Container setup and have installed AppDaemon in a docker container, a few additional steps required to make it compatible with HACS:
- - Make sure your Home Assistant root folder (which contains configuration.yaml file) is mapped  as `/config` volume within the AppDaemon container
- - Create `appdaemon/apps` folder within Home Assistant root which will be accessible as `/config/appdaemon/apps` within the AppDaemon container
- - Set up apps directory in AppDaemon configuration file `app_dir: /config/appdaemon/apps`
+ - Make sure your Home Assistant root folder (which contains `configuration.yaml` file) is mapped  as `/config` volume within the AppDaemon container
+ - Create `appdaemon/apps` folder in Home Assistant root folder which will be accessible as `/config/appdaemon/apps` from within the AppDaemon container
+ - Set up apps directory in AppDaemon [configuration file](https://appdaemon.readthedocs.io/en/latest/CONFIGURE.html#appdaemon-configuration): `app_dir: /config/appdaemon/apps`
 
 ## Watchman installation 
 Once you have AppDaemon up and running (check the logs), you can proceed to install watchman either manually or through HACS.
