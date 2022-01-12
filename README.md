@@ -24,6 +24,12 @@ This is a recommended way to install watchman. Installation in HACS is done in t
 2. Go to the "Automation" section on HACS, tap the three-dots menu in the upper right corner, go to "Custom repositories". Add new repository `dummylabs/watchman` with AppDaemon category. If Custom Repositories is hidden, wait until background task of HACS finished and custom repositories are unblocked. 
 3. Click the big blue button "Explore and download repositories" and search for "watchman", then click "Download this repository with HACS". 
 
+### Note on Home Assistant Docker Installation
+If you installed AppDaemon in a docker container, you should make it compatible with HACS:
+ - Make sure Home Assistant root folder (which contains configuration.yaml file) is mapped  as `/config` volume within AppDaemon container
+ - Create `appdaemon/apps` folder within Home Assistant root which will be accessible as `/config/appdaemon/apps` within AppDaemon container
+ - Finally, set up apps directory in AppDaemon configuration file `app_dir: /config/appdaemon/apps`
+
 #### Check if watchman is up and running
 
 Go to Configuration->Addons, Backups & Supervisor -> AppDaemon 4 -> Log. If watchman is installed, you should find following line in AppDaemon log: `INFO AppDaemon: Initializing app watchman using class Watchman from module watchman`. On top of that a persistent Home Assistant notification will appear on the first run.
