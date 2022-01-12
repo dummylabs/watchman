@@ -27,7 +27,6 @@ class Watchman(hass.Hass):
             if self.check_lovelace:
                 self.included_folders.append('/config/.storage/**/lovelace*')
 
-        self.log(self.included_folders)
         self.excluded_folders =  self.args.get('excluded_folders', [])
 
         if not isinstance(self.excluded_folders, list):
