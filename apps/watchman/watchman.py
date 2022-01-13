@@ -149,7 +149,7 @@ class Watchman(hass.Hass):
         else:
             report += f"\n=== No entities found in configuration files!\n"
 
-        report += f"\n=== Parsed {files_parsed} yaml files in {(time.time()-start_time):.2f} s."
+        report += f"\n=== Parsed {files_parsed} yaml files in {(time.time()-start_time):.2f} s. on {time.strftime('%d %b %Y %H:%M:%S')}"
         report_chunks.append(report)
 
         if create_report_file:
