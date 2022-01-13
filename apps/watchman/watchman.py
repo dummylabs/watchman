@@ -103,7 +103,9 @@ class Watchman(hass.Hass):
         for entity, occurences in entity_list.items():
             if entity in service_registry: #this is a service, not entity
                 continue
-            state = self.get_state(entity) or 'missing'
+            state = self.get_state(entity)
+            if not state and state != "":
+                state = 'missing'
             if entity in self.ignore or state in ignored_states:
                 continue            
             if state in ['missing', 'unknown', 'unavailable']:
