@@ -6,6 +6,7 @@ import re
 import os
 import yaml
 import time
+import fnmatch
 
 APP_NAME = "watchman"
 APP_CFG_PATH = "/config/appdaemon/apps/watchman/watchman.yaml"
@@ -15,6 +16,7 @@ APP_FOLDER = "/config/appdaemon/apps/watchman"
 class Watchman(hass.Hass):
     def initialize(self):
         self.check_lovelace = self.args.get('lovelace_ui', False)
+        self.debug_log = self.args.get('debug_log', False)
         self.included_folders = self.args.get('included_folders', ['/config'])
 
         if not isinstance(self.included_folders, list) or len(self.included_folders) == 0:
@@ -40,8 +42,8 @@ class Watchman(hass.Hass):
         self.chunk_size = self.args.get('chunk_size', 3500)
         self.notify_service = self.args.get('notify_service', None)
 
-        self.ignore = self.args.get('ignored_items', [])
-        if not isinstance(self.ignore, list):
+        self.ignored_items = self.args.get('ignored_items', [])
+        if not isinstance(self.ignored_items, list):
             self.persistent_notification(f"invalid {APP_NAME} config", 
             f"`ignored_items` parameter in `{APP_CFG_PATH}` should be a list", 
             error=True)
@@ -86,6 +88,10 @@ class Watchman(hass.Hass):
             services.append(f"{s['domain']}.{s['service']}")
         return services
 
+    def debug(self, msg):
+        if self.debug_log:
+            self.log(msg)
+
     def audit(self, create_report_file, notification, ignored_states = []):
         start_time = time.time()
         entity_list, service_list, files_parsed = utils.parse(self.included_folders, 
@@ -100,20 +106,34 @@ class Watchman(hass.Hass):
         services_missing = {}
         service_registry = self.load_services()
 
+        excluded_entities = []
+        excluded_services = []
+        for glob in self.ignored_items:
+            excluded_entities.extend(fnmatch.filter(entity_list, glob))
+            excluded_services.extend(fnmatch.filter(service_list, glob))
+
         for entity, occurences in entity_list.items():
             if entity in service_registry: #this is a service, not entity
                 continue
             state = self.get_state(entity)
             if not state and state != "":
                 state = 'missing'
-            if entity in self.ignore or state in ignored_states:
+            if state in ignored_states:
                 continue            
             if state in ['missing', 'unknown', 'unavailable']:
-                entities_missing [entity] = occurences
+                if entity in excluded_entities:
+                    self.debug(f"Ignored entity: {entity}")
+                    continue
+                else:
+                    entities_missing[entity] = occurences
         
         for service, occurences in service_list.items():
-            if service not in service_registry and service not in self.ignore:
-                services_missing[service] = occurences
+            if service not in service_registry:
+                if service in excluded_services:
+                    self.debug(f"Ignored service: {service}")
+                    continue
+                else:
+                    services_missing[service] = occurences
 
         self.set_state("sensor.watchman_missing_entities", state=len(entities_missing))
         self.set_state("sensor.watchman_missing_services", state=len(services_missing))
