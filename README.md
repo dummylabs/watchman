@@ -59,7 +59,7 @@ Key | Required | Description | Default
 `included_folders` | False | List of folders to scan for entities and services recursively | `"/config"`
 `excluded_folders` | False | List of folders to exclude from the scan. Takes precedence over included_folders | `None`
 `report_header` | False | Custom header for watchman report | `"=== Watchman Report ==="`
-`ignored_items` | False | List of items to ignore. The entity/service will be excluded from the report if their name fully matches one from the ignore list | `None`
+`ignored_items` | False | List of items to ignore. The entity/service will be excluded from the report if their name matches a rule from the ignore list. Wildcards are supported, see Advanced Configuration example below. | `None`
 `ignored_states` | False | List of entity states which should be ignored. Possible values are: `missing`, `unavailable`, `unknown` | `None`
 `chunk_size` | False | Some notification services, e.g., Telegram, refuse to deliver message if its size is greater than some internal limit. This key allows to set average size of a message in bytes. If report text size exceeds `chunk_size`, the report will be sent in several subsequent notifications | `3500`
 `lovelace_ui` | False | Parse Lovelace UI editor files stored in .storage folder (experimental) | `False` 
@@ -89,8 +89,9 @@ watchman:
   report_path: /config/watchman_report.txt
   chunk_size: 2000
   ignored_items: 
-    - tts.yandextts_say
-    - notify.mobile_app_vog_l29
+    # wildcards must be enclosed in quotes!
+    - "sensor.*" # ignore everything in sensor domain 
+    - "*.*_ble"  # ignore any entity/service which name ends with "_ble" 
   ignored_states:
     - unavailable
 
