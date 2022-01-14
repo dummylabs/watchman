@@ -22,7 +22,7 @@ If you current setup is either Home Assistant Operating System or Home Assistant
  - Set up apps directory in AppDaemon [configuration file](https://appdaemon.readthedocs.io/en/latest/CONFIGURE.html#appdaemon-configuration): `app_dir: /config/appdaemon/apps`
 
 ## Watchman installation 
-Once you have AppDaemon up and running (check the logs), you can proceed to install watchman either manually or through HACS.
+Once you have AppDaemon up and running (check the addon logs), you can proceed to install watchman either manually or through HACS.
 
 ### Install with HACS 
 This is a recommended way to install watchman. Installation in HACS is done in three simple steps:
