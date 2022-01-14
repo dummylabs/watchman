@@ -37,7 +37,7 @@ Go to Configuration->Addons, Backups & Supervisor -> AppDaemon 4 -> Log. If watc
 When the application is installed, check its configuration file in `/config/appdaemon/apps/watchman/watchman.yaml` and adjust it according to information from section Configuration below.
 
 ### Manual install
-Download the latest version of watchman.py and watchman.yaml, and then copy them to `/config/appdaemon/apps/watchman`. The files need to be in `/config/appdaemon/apps/watchman/watchman.py` and `/config/appdaemon/apps/watchman/watchman.yaml` respectively. 
+Download the latest version of `watchman.py`, `utils.py` and `watchman.yaml`, and then copy them to `/config/appdaemon/apps/watchman` folder.  
 
 ### Important note on update
 :bangbang: You should always backup the configuration file `watchman.yaml` before HACS update as it will be overwritten by HACS.
