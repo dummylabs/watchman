@@ -110,8 +110,9 @@ class Watchman(hass.Hass):
         excluded_entities = []
         excluded_services = []
         for glob in self.ignored_items:
-            excluded_entities.extend(fnmatch.filter(entity_list, glob))
-            excluded_services.extend(fnmatch.filter(service_list, glob))
+            if glob:
+                excluded_entities.extend(fnmatch.filter(entity_list, glob))
+                excluded_services.extend(fnmatch.filter(service_list, glob))
 
         for entity, occurences in entity_list.items():
             if entity in service_registry: #this is a service, not entity
