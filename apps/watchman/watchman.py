@@ -79,7 +79,8 @@ class Watchman(hass.Hass):
     def on_event(self, event_name, data, kwargs):
         create_file = data.get("create_file", True)
         send_notification = data.get("send_notification", True)
-        self.audit(create_report_file = create_file, notification = send_notification, ignored_states = self.ignored_states)
+        self.audit(create_report_file = create_file, notification = send_notification, 
+        ignored_states = self.ignored_states)
 
     def load_services(self):
         services = []
@@ -139,25 +140,27 @@ class Watchman(hass.Hass):
         self.set_state("sensor.watchman_missing_services", state=len(services_missing))
 
         report_chunks = []
-        chunk_size = 3500
 
         report = "" 
         report += f"{self.report_header} \n"
 
         if services_missing:
-            report += f"\n=== Missing {len(services_missing)} service(-s) from {len(service_list)} found in your config:\n"
+            report += f"\n=== Missing {len(services_missing)} service(-s) from " 
+            report += f"{len(service_list)} found in your config:\n"
             for service in services_missing: 
                 report += f"{service} in {service_list[service]}\n"
                 if len(report) > self.chunk_size:
                     report_chunks.append(report)
                     report = ""
         elif len(service_list) > 0:
-            report += f"\n=== Congratulations, all {len(service_list)} services from your config are available!\n"
+            report += f"\n=== Congratulations, all {len(service_list)} services from " 
+            report += "your config are available!\n"
         else:
             report += f"\n=== No services found in configuration files!\n"
 
         if entities_missing:
-            report += f"\n=== Missing {len(entities_missing)} entity(-es) from {len(entity_list)} found in your config:\n"
+            report += f"\n=== Missing {len(entities_missing)} entity(-es) from "
+            report += f"{len(entity_list)} found in your config:\n"
             for entity in entities_missing:
                 state = self.get_state(entity) or 'missing'
                 report += f"{entity}[{state}] in: {entity_list[entity]}\n"
@@ -165,11 +168,13 @@ class Watchman(hass.Hass):
                     report_chunks.append(report)
                     report = ""
         elif len(entity_list) > 0:
-            report += f"\n=== Congratulatiions, all {len(entity_list)} entities from your config are available!"
+            report += f"\n=== Congratulatiions, all {len(entity_list)} entities from "
+            report += "your config are available!\n"
         else:
             report += f"\n=== No entities found in configuration files!\n"
 
-        report += f"\n=== Parsed {files_parsed} yaml files in {(time.time()-start_time):.2f} s. on {time.strftime('%d %b %Y %H:%M:%S')}"
+        report += f"\n=== Parsed {files_parsed} yaml files in "
+        report += f"{(time.time()-start_time):.2f} s. on {time.strftime('%d %b %Y %H:%M:%S')}"
         report_chunks.append(report)
 
         if create_report_file:
