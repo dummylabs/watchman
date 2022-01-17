@@ -67,16 +67,16 @@ Key | Required | Description | Default
 ### Minimal working configuration
 
 ```yaml
+global_modules: utils
 watchman:
   module: watchman
   class: Watchman
-
-global_modules: utils
 ```
 
 ### Advanced configuration
 
 ```yaml
+global_modules: utils
 watchman:
   module: watchman
   class: Watchman
@@ -99,8 +99,6 @@ watchman:
     - "*.*_ble"  # ignore any entity/service which name ends with "_ble" 
   ignored_states:
     - unavailable
-
-global_modules: utils
 ```
 
 ## Usage
