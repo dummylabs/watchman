@@ -176,7 +176,7 @@ class Watchman(hass.Hass):
                     report_chunks.append(report)
                     report = ""
         elif len(entity_list) > 0:
-            report += f"\n=== Congratulatiions, all {len(entity_list)} entities from "
+            report += f"\n=== Congratulations, all {len(entity_list)} entities from "
             report += "your config are available!\n"
         else:
             report += "\n=== No entities found in configuration files!\n"
