@@ -1,6 +1,6 @@
 # AppDaemon Watchman
 
-The world around us is constantly changing and so is Home Assistant. How often have you found yourself in a situation when your automations had stopped working because some entities become permanently unavailable or service changed their name? For example, Home Assistant companion app can easily change the name of its services and sensors it exposes to Home Assistant if you changed the device name in the app configuration. The watchman is an attempt to control such changes and make you able to react proactively, before some critical automation will break.
+The world around us is constantly changing and so is Home Assistant. How often have you found yourself in a situation when your automations had stopped working because some entities become permanently unavailable or services changed their name? For example, Home Assistant companion app can easily change the name of its services and sensors it exposes to Home Assistant if you changed the device name in the app configuration. The watchman is an attempt to control such changes and make you able to react proactively, before some critical automation will break.
 
 ## What does it do
 The app collects all the Home Assistant entities (sensors, timers, input_selects, etc.) mentioned in your yaml configuration files as well as all the services. Having a list of all entities, the app checks their state one by one and reports those not available or missing. For services, the app checks whether service is available in the service registry and reports missing services via notification service of choice (unless it is missing too :). The [example of a report](https://github.com/dummylabs/watchman#example-of-a-watchman-report) is given below.
@@ -89,6 +89,11 @@ watchman:
   report_path: /config/watchman_report.txt
   chunk_size: 2000
   ignored_items: 
+    - timer.cancelled
+    - timer.finished
+    - timer.started
+    - timer.restarted
+    - timer.paused
     # wildcards must be enclosed in quotes!
     - "sensor.*" # ignore everything in sensor domain 
     - "*.*_ble"  # ignore any entity/service which name ends with "_ble" 
