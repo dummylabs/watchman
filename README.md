@@ -54,7 +54,7 @@ Key | Required | Description | Default
 ------------ | ------------- | ------------- | ------------- 
 `module` | True | AppDaemon requirement | `"watchman"`
 `class` | True | AppDaemon requirement | `"Watchman"` 
-`globals` | True | AppDaemon requirement | `"utils"`
+`global_modules` | True | AppDaemon requirement | `"utils"`
 `notify_service` | False | Home assistant notification service to sent report via | `None` 
 `included_folders` | False | List of folders to scan for entities and services recursively | `"/config"`
 `excluded_folders` | False | List of folders to exclude from the scan. Takes precedence over included_folders | `None`
