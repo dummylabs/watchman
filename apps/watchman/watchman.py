@@ -29,6 +29,7 @@ class Watchman(hass.Hass):
             if self.check_lovelace:
                 self.included_folders.append('/config/.storage/**/lovelace*')
 
+        self.report_header = self.args.get('report_header', '=== Watchman Report ===')
         self.excluded_folders =  self.args.get('excluded_folders', [])
 
         if not isinstance(self.excluded_folders, list):
@@ -40,7 +41,7 @@ class Watchman(hass.Hass):
         # large reports are divided into chunks (size in bytes) as notification services
         # may reject very long messages
         self.chunk_size = self.args.get('chunk_size', 3500)
-        self.notify_service = self.args.get('notify_service', None)
+        self.notify_service = self.normalize(self.args.get('notify_service', None))
 
         self.ignored_items = self.args.get('ignored_items', [])
         if not isinstance(self.ignored_items, list):
@@ -77,11 +78,37 @@ class Watchman(hass.Hass):
         if error:
             raise Exception(msg)
 
+    def normalize(self, ns):
+        """transform different notations of notification service description to dict""" 
+        allowed_params = ("name", "service_data")
+        if not isinstance(ns, dict):
+            return {"name": ns, "service_data":{}}
+        else:
+            if not "service_data" in ns:
+                ns["service_data"] = {}
+            for key in ns:
+                if key not in allowed_params:
+                    self.p_notification(f"invalid notify_service settings", f"Wrong parameter `{key}` in `notify_service` settings. Allowed params are: {allowed_params}, please check the documentation.", error=True)
+            return ns
+
     def on_event(self, event_name, data, kwargs):
         '''Process ad.watchman.audit event'''
         create_file = data.get("create_file", True)
         send_notification = data.get("send_notification", True)
-        self.audit(create_report_file = create_file, notification = send_notification,
+        ns = None
+
+        if send_notification:
+            ns = data.get("notify_service", self.notify_service)
+
+        notify_service = self.normalize(ns)
+        self.debug(f"::on_event:: notify_service={notify_service}")
+
+        if send_notification and not notify_service["name"]:
+            self.p_notification(f"invalid {APP_NAME} config",
+            f"Set `notify_service` parameter in `{APP_CFG_PATH}`, to a notification "
+            "service, e.g. `notify.telegram`", error=True)
+
+        self.audit(create_report_file = create_file, notify_service = notify_service,
         ignored_states = self.ignored_states)
 
     def load_services(self):
@@ -97,7 +124,7 @@ class Watchman(hass.Hass):
         if self.debug_log:
             self.log(msg)
 
-    def audit(self, create_report_file, notification, ignored_states = None):
+    def audit(self, create_report_file, notify_service, ignored_states = None):
         '''Perform audit of entities and services'''
         if ignored_states is None:
             ignored_states = []
@@ -198,24 +225,25 @@ class Watchman(hass.Hass):
             for chunk in report_chunks:
                 report_file.write(chunk)
             report_file.close()
-        if notification:
+        if notify_service["name"]:
             if (entities_missing or services_missing):
-                self.send_notification(report_chunks)
+                self.send_notification(report_chunks, notify_service)
             else:
-                self.log("Entities and services are fine, no notification required")
+                self.debug("Entities and services are fine, no notification required")
 
-    def send_notification(self, report):
+    def send_notification(self, report, notify_service):
         '''Send audit report via a notification service'''
-        if not self.notify_service in self.load_services():
+        self.debug(f"::send_notification:: notify_service:{notify_service}")
+        if not notify_service["name"] in self.load_services():
             self.p_notification(f"invalid {APP_NAME} config",
-            f"{self.notify_service} service was not found in service registry. "
+            f"{notify_service['name']} service was not found in Home Assistant service registry. "
             f"Please specify a valid notification service, e.g. `notify.telegram`", error=True)
-        elif not self.notify_service:
-            self.p_notification(f"invalid {APP_NAME} config",
-            f"Set `notify_service` parameter in `{APP_CFG_PATH}`, to a notification "
-            "service, e.g. `notify.telegram`", error=True)
+
+        service_data = notify_service["service_data"]
         for chunk in report:
-            self.call_service(self.notify_service.replace('.','/'), message=chunk)
+            service_data["message"] = chunk
+            #self.debug(f"::send_notification:: service_data={service_data}")
+            self.call_service(self.notify_service["name"].replace('.','/'), **service_data)
 
     def set_flag(self, flag):
         '''Set persistent flag'''
