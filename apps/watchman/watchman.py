@@ -30,13 +30,21 @@ class Watchman(hass.Hass):
                 self.included_folders.append('/config/.storage/**/lovelace*')
 
         self.report_header = self.args.get('report_header', '=== Watchman Report ===')
-        self.excluded_folders =  self.args.get('excluded_folders', [])
 
+        self.excluded_folders =  self.args.get('excluded_folders', [])
         if not isinstance(self.excluded_folders, list):
             self.p_notification(f"invalid {APP_NAME} config",
             f"`excluded_folders` parameter in `{APP_CFG_PATH}` should be "
             "a list not single value", error=True)
-        self.report_header = self.args.get('report_header', '=== Watchman Report ===')
+
+        ignored_files = self.args.get('ignored_files', [])
+        if not isinstance(ignored_files, list):
+            self.p_notification(f"invalid {APP_NAME} config",
+            f"`ignored_files` parameter in `{APP_CFG_PATH}` should be "
+            "a list not single value", error=True)
+        ignored_files.extend([f"{folder}*" for folder in self.excluded_folders])
+        self.ignored_files = "|".join([f"({fnmatch.translate(f)})" for f in ignored_files])
+        self.debug(f'self.ignored_files={self.ignored_files}')
 
         # large reports are divided into chunks (size in bytes) as notification services
         # may reject very long messages
@@ -79,7 +87,10 @@ class Watchman(hass.Hass):
             raise Exception(msg)
 
     def normalize(self, ns):
-        """transform different notations of notification service description to dict""" 
+        """
+        notify_service can be specified either as a plain string or as a dict of parameters
+        this function transforms plain string notification service configuration to dict
+        """ 
         allowed_params = ("name", "service_data")
         if not isinstance(ns, dict):
             return {"name": ns, "service_data":{}}
@@ -88,7 +99,9 @@ class Watchman(hass.Hass):
                 ns["service_data"] = {}
             for key in ns:
                 if key not in allowed_params:
-                    self.p_notification(f"invalid notify_service settings", f"Wrong parameter `{key}` in `notify_service` settings. Allowed params are: {allowed_params}, please check the documentation.", error=True)
+                    self.p_notification(f"invalid notify_service settings", 
+                    f"Wrong parameter `{key}` in `notify_service` settings. Allowed params are: "
+                    f"{allowed_params}, please check the documentation.", error=True)
             return ns
 
     def on_event(self, event_name, data, kwargs):
@@ -129,13 +142,13 @@ class Watchman(hass.Hass):
         if ignored_states is None:
             ignored_states = []
         start_time = time.time()
-        entity_list, service_list, files_parsed = utils.parse(self.included_folders,
-        self.excluded_folders, self)
+        entity_list, service_list, files_parsed, files_ignored = utils.parse(self.included_folders,
+        self.excluded_folders, self.ignored_files, self)
         self.log(f"Found {len(entity_list)} entities, {len(service_list)} services ")
         if files_parsed == 0:
-            self.log('No yaml files found, please check apps.yaml config', level="ERROR")
+            self.log(f'0 files parsed, {files_ignored} files ignored, please check apps.yaml config', level="ERROR")
             self.p_notification("Error from watchman!",
-                                "No automation files found, please check apps.yaml config")
+                                f"No files found, {files_ignored} files ignored, please check apps.yaml config")
             return
 
         entities_missing = {}
@@ -175,9 +188,7 @@ class Watchman(hass.Hass):
         self.set_state("sensor.watchman_missing_services", state=len(services_missing))
 
         report_chunks = []
-
-        report = ""
-        report += f"{self.report_header} \n"
+        report = f"{self.report_header} \n"
 
         if services_missing:
             report += f"\n=== Missing {len(services_missing)} service(-s) from "
@@ -208,7 +219,7 @@ class Watchman(hass.Hass):
         else:
             report += "\n=== No entities found in configuration files!\n"
 
-        report += f"\n=== Parsed {files_parsed} yaml files in "
+        report += f"\n=== Parsed {files_parsed} files, ignored {files_ignored} files in "
         report += f"{(time.time()-start_time):.2f} s. on {time.strftime('%d %b %Y %H:%M:%S')}"
         report_chunks.append(report)
 
@@ -242,14 +253,15 @@ class Watchman(hass.Hass):
         service_data = notify_service["service_data"]
         for chunk in report:
             service_data["message"] = chunk
-            #self.debug(f"::send_notification:: service_data={service_data}")
-            self.call_service(self.notify_service["name"].replace('.','/'), **service_data)
+            # there's no way to catch AD call_service errors for now 
+            # https://github.com/AppDaemon/appdaemon/issues/927
+            self.call_service(notify_service["name"].replace('.','/'), **service_data)
 
     def set_flag(self, flag):
-        '''Set persistent flag'''
+        '''Set a persistent flag'''
         report_file = open(os.path.join(APP_FOLDER, flag), "w", encoding="utf-8")
         report_file.close()
 
     def get_flag(self, flag):
-        '''Get persistent flag'''
+        '''Get a persistent flag'''
         return os.path.exists(os.path.join(APP_FOLDER, flag))

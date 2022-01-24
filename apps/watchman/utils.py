@@ -2,19 +2,14 @@
 import glob
 import re
 
-def folder_included(path, excluded_folders):
-    '''Check if a folder should be included into scan'''
-    for folder in excluded_folders:
-        if folder in path:
-            return False
-    return True
-
-def get_next_file(folder_list, excluded_folders):
+def get_next_file(folder_list, excluded_folders, ignored_files, logger):
     '''Returns next file for scan'''
+    if not ignored_files:
+        ignored_files = ""
+    ignored_files_re = re.compile(ignored_files)
     for folder in folder_list:
         for filename in glob.iglob(folder, recursive=True):
-            if folder_included(filename, excluded_folders):
-                yield filename
+            yield (filename, (ignored_files and ignored_files_re.match(filename)))
 
 def add_entry(_list, entry, yaml_file, lineno):
     '''Add entry to list of missing entities with line number information'''
@@ -24,9 +19,11 @@ def add_entry(_list, entry, yaml_file, lineno):
     else:
         _list[entry] = {yaml_file: [lineno]}
 
-def parse(folders, excluded_folders, logger=None):
+def parse(folders, excluded_folders, ignored_files, logger=None):
     '''Parse a yaml or json file for entities/services'''
-    files_parsed = 0
+    if logger:
+        logger.log(f"::parse:: ignored_files={ignored_files}")
+    files_parsed = files_ignored = 0
     entity_pattern = re.compile(r"(?:(?<=\s)|(?<=^)|(?<=\")|(?<=\'))([A-Za-z_0-9]*\s*:)?(?:\s*)?"
     r"((air_quality|alarm_control_panel|alert|automation|binary_sensor|button|calendar|camera|"
     r"climate|counter|device_tracker|fan|group|humidifier|input_boolean|input_number|"
@@ -36,9 +33,10 @@ def parse(folders, excluded_folders, logger=None):
     comment_pattern = re.compile(r'#.*')
     entity_list = {}
     service_list = {}
-    for yaml_file in get_next_file(folders, excluded_folders):
-        #if logger:
-        #    logger.log(f'opening {yaml_file} file', level="DEBUG")
+    for yaml_file, ignored in get_next_file(folders, excluded_folders, ignored_files, logger):
+        if ignored:
+            files_ignored += 1
+            continue
         files_parsed += 1
         for i, line in enumerate(open(yaml_file, encoding='utf-8')):
             line = re.sub(comment_pattern, '', line)
@@ -50,5 +48,5 @@ def parse(folders, excluded_folders, logger=None):
                 val = match.group(1)
                 add_entry(service_list, val, yaml_file, i+1)
     if logger:
-        logger.log(f"Parsed {files_parsed} files.")
-    return (entity_list, service_list, files_parsed)
+        logger.log(f"Parsed {files_parsed} files. Ignored {files_ignored} files.")
+    return (entity_list, service_list, files_parsed, files_ignored)
