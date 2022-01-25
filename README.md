@@ -104,7 +104,7 @@ By default, the event handler will create a text file with the report and send a
 
  - `create_file` (optional, default=true)
  - `send_notification` (optional, default=true)
- - `notify_service` (optional, default is eponymous setting from watchman.yaml)
+ - `notify_service` (optional, eponymous setting from watchman.yaml is used by default)
 
 If `create_file` or `send_notification` event pafameters were not set, they are `true` by default. The parameter `notify_service` allows sending report via notification service of choice. It overrides `notify_service` setting from `watchman.yaml` file. Also see Advanced usage examples section at the bottom of this document. 
 
