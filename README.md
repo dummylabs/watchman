@@ -208,7 +208,7 @@ watchman:
 ```
 
 ### Additional notification service parameters in ad.watchman.audit event
-You can use an arbitrary notification service within `ad.watchman.audit` event. Event data specified in notification service parameters takes precedence over `notify_service` setting in `watchman.yaml` configuration file.
+You can use an arbitrary notification service with `ad.watchman.audit` event. Event data takes precedence over `notify_service` setting in `watchman.yaml` configuration file.
 ```yaml
 event: ad.watchman.audit
 event_data:
@@ -221,7 +221,7 @@ event_data:
 ```
 
 ### Exclude specific file or folder from the report
-You can exclude files or even whole folders from the report using wildcards, see example below. Wildcards in configuration file should be enclosed in quotes. This is more powerful alternative to `excluded_folders` parameter which will be deprecated in the future.
+Specific files or even whole folders can be excluded from the report using wildcards, see example below. Wildcards in configuration file should be enclosed in quotes. This is more powerful alternative to `excluded_folders` parameter which will be deprecated in the future.
 ```yaml
 global_modules: utils
 watchman:
