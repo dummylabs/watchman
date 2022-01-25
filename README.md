@@ -107,6 +107,8 @@ By default, the event handler will create a text file with the report and send a
 
 If one or both pafameters were not set, they are `True` by default. 
 
+### Trigger event from Home Assistant UI
+
 ![Event example](./images/event_example.png)
 
 Automation example:
