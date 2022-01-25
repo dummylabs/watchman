@@ -100,7 +100,7 @@ watchman:
 ## Usage
 
 The audit can be triggered by firing event `ad.watchman.audit` from Developer Tools UI, an automation or a script. Once the event is fired, the report will be prepared and saved to `/config/watchman_report.txt`. 
-By default, the event handler will create a text file with the report and send a notification via notification service from `watchman.yaml` configuration. A long report may be split into several messages due to limitations imposed by some notification services (e.g. telegram). This behavior can be altered with three additional parameters in the event data:
+By default, the event handler will create a text file with the report and send a notification via notification service from `watchman.yaml` configuration. A long report may be split into several messages due to limitations imposed by some notification services (e.g. telegram). This behavior can be altered with three _optional_ parameters in the event data:
 
  - `create_file` 
  - `send_notification` 
