@@ -208,7 +208,7 @@ watchman:
 ```
 
 ### Additional notification service parameters in ad.watchman.audit event
-You can use an arbitrary notification service within ad.watchman.audit event. Event data specified in notification service parameters takes precedence over notify_servive setting in watchman.yaml configuration file.
+You can use an arbitrary notification service within `ad.watchman.audit` event. Event data specified in notification service parameters takes precedence over `notify_service` setting in `watchman.yaml` configuration file.
 ```yaml
 event: ad.watchman.audit
 event_data:
