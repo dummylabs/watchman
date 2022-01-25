@@ -23,7 +23,7 @@ def parse(folders, excluded_folders, ignored_files, logger=None):
     '''Parse a yaml or json file for entities/services'''
     if logger:
         logger.log(f"::parse:: ignored_files={ignored_files}")
-    files_parsed = files_ignored = 0
+    files_parsed = 0
     entity_pattern = re.compile(r"(?:(?<=\s)|(?<=^)|(?<=\")|(?<=\'))([A-Za-z_0-9]*\s*:)?(?:\s*)?"
     r"((air_quality|alarm_control_panel|alert|automation|binary_sensor|button|calendar|camera|"
     r"climate|counter|device_tracker|fan|group|humidifier|input_boolean|input_datetime|"
@@ -33,9 +33,10 @@ def parse(folders, excluded_folders, ignored_files, logger=None):
     comment_pattern = re.compile(r'#.*')
     entity_list = {}
     service_list = {}
+    effectively_ignored = []
     for yaml_file, ignored in get_next_file(folders, excluded_folders, ignored_files, logger):
         if ignored:
-            files_ignored += 1
+            effectively_ignored.append(yaml_file)
             continue
         files_parsed += 1
         for i, line in enumerate(open(yaml_file, encoding='utf-8')):
@@ -48,5 +49,6 @@ def parse(folders, excluded_folders, ignored_files, logger=None):
                 val = match.group(1)
                 add_entry(service_list, val, yaml_file, i+1)
     if logger:
-        logger.log(f"Parsed {files_parsed} files. Ignored {files_ignored} files.")
-    return (entity_list, service_list, files_parsed, files_ignored)
+        logger.log(f"::parse:: Parsed files: {files_parsed} ")
+        logger.log(f"::parse:: Ignored files: {effectively_ignored}")
+    return (entity_list, service_list, files_parsed, len(effectively_ignored))

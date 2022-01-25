@@ -101,11 +101,12 @@ class Watchman(hass.Hass):
                 if key not in allowed_params:
                     self.p_notification(f"invalid notify_service settings", 
                     f"Wrong parameter `{key}` in `notify_service` settings. Allowed params are: "
-                    f"{allowed_params}, please check the documentation.", error=True)
+                    f"{allowed_params}, please check the [documentation](https://github.com/dummylabs/watchman).", error=True)
             return ns
 
     def on_event(self, event_name, data, kwargs):
         '''Process ad.watchman.audit event'''
+        self.debug(f"::on_event:: event data:{data}")
         create_file = data.get("create_file", True)
         send_notification = data.get("send_notification", True)
         ns = None
@@ -133,7 +134,7 @@ class Watchman(hass.Hass):
         return services
 
     def debug(self, msg):
-        '''Debug logging'''
+        '''Custom debug logging. Standard debug level adds a lot of clutter from AD'''
         if self.debug_log:
             self.log(msg)
 
@@ -141,10 +142,11 @@ class Watchman(hass.Hass):
         '''Perform audit of entities and services'''
         if ignored_states is None:
             ignored_states = []
+        logger = self if self.debug_log else None
         start_time = time.time()
         entity_list, service_list, files_parsed, files_ignored = utils.parse(self.included_folders,
-        self.excluded_folders, self.ignored_files, self)
-        self.log(f"Found {len(entity_list)} entities, {len(service_list)} services ")
+        self.excluded_folders, self.ignored_files, logger)
+        self.log(f"Report created. Found {len(entity_list)} entities, {len(service_list)} services ")
         if files_parsed == 0:
             self.log(f'0 files parsed, {files_ignored} files ignored, please check apps.yaml config', level="ERROR")
             self.p_notification("Error from watchman!",
