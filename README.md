@@ -107,6 +107,8 @@ By default, the event handler will create a text file with the report and send a
 
 If one or both pafameters were not set, they are `True` by default. 
 
+![Event example](./images/event_example.png)
+
 Automation example:
 
 ```yaml
@@ -224,6 +226,7 @@ watchman:
   module: watchman
   class: Watchman
   ignored_files:
+    # wildcards must be enclosed in quotes!
     - "*.yaml" # exclude all yaml files from the report
     - "/config/entities/*" # exclude all files in /config/entities
     - "*/automations.yaml" # exclude automations.yaml file only
