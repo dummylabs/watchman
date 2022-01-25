@@ -102,11 +102,11 @@ watchman:
 The audit can be triggered by firing event `ad.watchman.audit` from Developer Tools UI, an automation or a script. Once the event is fired, the report will be prepared and saved to `/config/watchman_report.txt`. 
 By default, the event handler will create a text file with the report and send a notification via notification service from `watchman.yaml` configuration. A long report may be split into several messages due to limitations imposed by some notification services (e.g. telegram). This behavior can be altered with three optional parameters in the event data:
 
- - `create_file` (optonal)
- - `send_notification` (optonal)
- - `notify_service` (optonal)
+ - `create_file` (optional, default=true)
+ - `send_notification` (optional, default=true)
+ - `notify_service` (optional, default is eponymous setting from watchman.yaml)
 
-If `create_file` or `send_notification` event pafameters were not set, they are `True` by default. The parameter `notify_service` allows sending report via notification service of choice. It overrides `notify_service` setting from `watchman.yaml` file. Also see Advanced usage examples section at the bottom of this document. 
+If `create_file` or `send_notification` event pafameters were not set, they are `true` by default. The parameter `notify_service` allows sending report via notification service of choice. It overrides `notify_service` setting from `watchman.yaml` file. Also see Advanced usage examples section at the bottom of this document. 
 
 ### Trigger event from Home Assistant UI
 
