@@ -109,7 +109,7 @@ If one or both pafameters were not set, they are `True` by default.
 
 ### Trigger event from Home Assistant UI
 
-![Event example](./images/event_example.png)
+![Event example](./images/event_example.png | width=200)
 
 Automation example:
 
