@@ -116,8 +116,8 @@ If one or both pafameters were not set, they are `True` by default.
 ```yaml
 event: ad.watchman.audit
 event_data:
-  create_file: true
-  send_notification: false
+  notify_service: persistent_notification.create
+  send_notification: true
 ```
 
 Besides of the report, a few sensors will be automatically created or updated:
