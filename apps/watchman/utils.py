@@ -26,9 +26,9 @@ def parse(folders, excluded_folders, ignored_files, logger=None):
     files_parsed = files_ignored = 0
     entity_pattern = re.compile(r"(?:(?<=\s)|(?<=^)|(?<=\")|(?<=\'))([A-Za-z_0-9]*\s*:)?(?:\s*)?"
     r"((air_quality|alarm_control_panel|alert|automation|binary_sensor|button|calendar|camera|"
-    r"climate|counter|device_tracker|fan|group|humidifier|input_boolean|input_number|"
-    r"input_select|light|media_player|number|person|proximity|scene|script|select|sensor|"
-    r"sun|switch|timer|vacuum|weather|zone)\.[A-Za-z_*0-9]+)")
+    r"climate|counter|device_tracker|fan|group|humidifier|input_boolean|input_datetime|"
+    r"input_number|input_select|light|lock|media_player|number|person|plant|proximity|remote|"
+    r"scene|script|select|sensor|sun|switch|timer|vacuum|weather|zone)\.[A-Za-z_*0-9]+)")
     service_pattern = re.compile(r"service:\s*([A-Za-z_0-9]*\.[A-Za-z_0-9]+)")
     comment_pattern = re.compile(r'#.*')
     entity_list = {}
