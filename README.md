@@ -111,7 +111,7 @@ If one or both pafameters were not set, they are `True` by default.
 
 ![Event example](./images/event_example.png)
 
-Automation example:
+### Automation example
 
 ```yaml
 event: ad.watchman.audit
