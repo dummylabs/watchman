@@ -13,13 +13,7 @@ Watchman can be installed either manually or using Home Assistant Community Stor
 
 ## AppDaemon installation 
 
-[AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) can work with any flavour of Home Assistant setup. If you use Home Assistant Operating System or Home Assistant Supervised, the easiest way to install AppDaemon 4 will be the addon from the Add-on store. Once the addon is installed and started, it will create a folder in /config/appdaemon with the needed structure for AppDaemon to run. AppDaemon can also be installed for HA Container and HA Core flavors, check the documentation [here](https://appdaemon.readthedocs.io/en/latest/INSTALL.html).
-
-### Note on Home Assistant Docker Installation
-If you current setup is either Home Assistant Operating System or Home Assistant Supervised, proceed to the section [Watchman installation](https://github.com/dummylabs/watchman#watchman-installation) below. If you have Home Assistant Container setup and have installed AppDaemon in a docker container, a few additional steps are required to make it compatible with HACS:
- - Make sure your Home Assistant root folder (which contains `configuration.yaml` file) is mapped  as `/config` volume within the AppDaemon container
- - Create `appdaemon/apps` folder in Home Assistant root folder which will be accessible as `/config/appdaemon/apps` from within the AppDaemon container
- - Set up apps directory in AppDaemon [configuration file](https://appdaemon.readthedocs.io/en/latest/CONFIGURE.html#appdaemon-configuration): `app_dir: /config/appdaemon/apps`
+[AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) can work with any flavour of Home Assistant setup. If you use Home Assistant Operating System or Home Assistant Supervised, the easiest way to install AppDaemon 4 will be the addon from the Add-on store. Once the addon is installed and started, it will create a folder in /config/appdaemon with the needed structure for AppDaemon to run. AppDaemon can also be installed for HA Container and HA Core flavors, check the documentation [here](https://appdaemon.readthedocs.io/en/latest/INSTALL.html). You can also install AppDaemon in a Docker container, this configuration is for advanced users only and is unsupported. A few tips and howtos are given at the bottom of this document. 
 
 ## Watchman installation 
 Once you have AppDaemon up and running (check the addon logs), you can proceed to install watchman either manually or through HACS.
@@ -55,7 +49,7 @@ Key | Required | Description | Default
 `module` | True | AppDaemon requirement | `"watchman"`
 `class` | True | AppDaemon requirement | `"Watchman"` 
 `global_modules` | True | AppDaemon requirement | `"utils"`
-`notify_service` | False | Home assistant notification service to sent report via | `None` 
+`notify_service` | False | Home assistant notification service to sent report via. Can be a string, e.g. notify.telegram or a yaml dictionary with additional service parameters, see Advanced usage examples below | `None` 
 `included_folders` | False | List of folders to scan for entities and services recursively | `"/config"`
 `excluded_folders` | False | List of folders to exclude from the scan. Takes precedence over included_folders | `None`
 `report_header` | False | Custom header for watchman report | `"=== Watchman Report ==="`
@@ -63,6 +57,7 @@ Key | Required | Description | Default
 `ignored_items` | False | List of items to ignore. The entity/service will be excluded from the report if their name matches a rule from the ignore list. Wildcards are supported, see Advanced Configuration example below. | `None`
 `ignored_states` | False | List of entity states which should be ignored. Possible values are: `missing`, `unavailable`, `unknown` | `None`
 `chunk_size` | False | Some notification services, e.g., Telegram, refuse to deliver a message if its size is greater than some internal limit. This key allows to set average size of a message in bytes. If report text size exceeds `chunk_size`, the report will be sent in several subsequent notifications | `3500`
+`ignored_files` | Advanced alternative for `excluded_folders` parameter which will be deprecated in future releases. Allows to ignore a specific file or a whole folder using wildcards, see Advanced usage examples below. | `None`
 `lovelace_ui` | False | Parse Lovelace UI editor files stored in .storage folder (experimental) | `False` 
 
 ### Minimal working configuration
@@ -191,3 +186,52 @@ person.egor[unknown] in: {'/config/customizations/entities/person.egor.yaml': [1
 
 === Parsed 213 yaml files in 0.31 s.
 ```
+
+## Advanced usage examples
+
+### Specify additional notification service parameters in watchman.yaml
+Notification service can be specified in extended format along with additional service parameters.
+```yaml
+global_modules: utils
+watchman:
+  module: watchman
+  class: Watchman
+  notify_service:
+    name: telegram_bot.send_message
+    service_data:
+      title: Hello
+      parse_mode: html
+```
+
+### Specify additional notification service parameters in ad.watchman.audit event
+You can use an arbitrary notification service within ad.watchman.audit event. Event data specified in notification service parameters takes precedence over notify_servive setting in watchman.yaml configuration file.
+```yaml
+event: ad.watchman.audit
+event_data:
+  send_notification: true
+  notify_service:
+    name: telegram_bot.send_message
+    service_data:
+      title: Hello
+      parse_mode: html
+```
+
+### Exclude specific file or folder from the report
+You can exclude files or even whole folders from the report using wildcards, see example below. Wildcards in configuration file should be enclosed in quotes. This is more powerful alternative to `excluded_folders` parameter which will be deprecated in the future.
+```yaml
+global_modules: utils
+watchman:
+  module: watchman
+  class: Watchman
+  ignored_files:
+    - "*.yaml" # exclude all yaml files from the report
+    - "/config/entities/*" # exclude all files in /config/entities
+    - "*/automations.yaml" # exclude automations.yaml file only
+```
+
+### Docker container installation of AppDaemon (unsupported)
+If you have Home Assistant Container setup and have installed AppDaemon in a docker container, a few additional steps are required to make it compatible with HACS:
+ - Make sure your Home Assistant root folder (which contains `configuration.yaml` file) is mapped  as `/config` volume within the AppDaemon container
+ - Create `appdaemon/apps` folder in Home Assistant root folder which will be accessible as `/config/appdaemon/apps` from within the AppDaemon container
+ - Set up apps directory in AppDaemon [configuration file](https://appdaemon.readthedocs.io/en/latest/CONFIGURE.html#appdaemon-configuration): `app_dir: /config/appdaemon/apps`
+ - Specify a timezone for your container in order to have correct date and time in the report. 
