@@ -49,7 +49,7 @@ Key | Required | Description | Default
 `module` | True | AppDaemon requirement | `"watchman"`
 `class` | True | AppDaemon requirement | `"Watchman"` 
 `global_modules` | True | AppDaemon requirement | `"utils"`
-`notify_service` | False | Home assistant notification service to sent report via. Can be a string, e.g. notify.telegram or a yaml dictionary with additional service parameters, see Advanced usage examples below | `None` 
+`notify_service` | False | Home assistant notification service to sent report via. Can be a string, e.g. notify.telegram or a yaml dictionary with additional service parameters, see [Advanced usage examples](https://github.com/dummylabs/watchman#additional-notification-service-parameters-in-watchmanyaml) below | `None` 
 `included_folders` | False | List of folders to scan for entities and services recursively | `"/config"`
 `excluded_folders` | False | List of folders to exclude from the scan. Takes precedence over included_folders | `None`
 `report_header` | False | Custom header for watchman report | `"=== Watchman Report ==="`
@@ -57,7 +57,7 @@ Key | Required | Description | Default
 `ignored_items` | False | List of items to ignore. The entity/service will be excluded from the report if their name matches a rule from the ignore list. Wildcards are supported, see Advanced Configuration example below. | `None`
 `ignored_states` | False | List of entity states which should be ignored. Possible values are: `missing`, `unavailable`, `unknown` | `None`
 `chunk_size` | False | Some notification services, e.g., Telegram, refuse to deliver a message if its size is greater than some internal limit. This key allows to set average size of a message in bytes. If report text size exceeds `chunk_size`, the report will be sent in several subsequent notifications | `3500`
-`ignored_files` | False| A powerful alternative for `excluded_folders` parameter which will be deprecated in future releases. Allows to ignore a specific file or a whole folder using wildcards, see Advanced usage examples below. | `None`
+`ignored_files` | False| A powerful alternative for `excluded_folders` parameter which will be deprecated in future releases. Allows to ignore a specific file or a whole folder using wildcards, see [Advanced usage examples below](https://github.com/dummylabs/watchman#exclude-specific-file-or-folder-from-the-report). | `None`
 `lovelace_ui` | False | Parse Lovelace UI editor files stored in .storage folder (experimental) | `False` 
 
 ### Minimal working configuration
@@ -106,7 +106,7 @@ By default, the event handler will create a text file with the report and send a
  - `send_notification` (optional, default=true)
  - `notify_service` (optional, overrides eponymous setting from `watchman.yaml`)
 
-If `create_file` or `send_notification` event pafameters were not set, they are `true` by default. The parameter `notify_service` allows sending report via notification service of choice. It overrides `notify_service` setting from `watchman.yaml` file. Also see Advanced usage examples section at the bottom of this document. 
+If `create_file` or `send_notification` event pafameters were not set, they are `true` by default. The parameter `notify_service` allows sending report via notification service of choice. It overrides `notify_service` setting from `watchman.yaml` file. Also see [Advanced usage examples](https://github.com/dummylabs/watchman#additional-notification-service-parameters-in-adwatchmanaudit-event) section at the bottom of this document. 
 
 ### Trigger event from Home Assistant UI
 
