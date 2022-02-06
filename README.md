@@ -1,5 +1,5 @@
 # Important note
-## We are happy to announce Home Assistant custom component version of Watchman, it's available here: https://github.com/dummylabs/thewatchman 
+## We are proud to announce Home Assistant custom component version of Watchman, it's available here: https://github.com/dummylabs/thewatchman 
 
 # AppDaemon Watchman
 
